@@ -5,16 +5,19 @@ import boto3
 
 
 def cli():
-    letters = ["I-other"]
-    for letter in letters:
-        data = list()
-        part = 0
-        bucket = "gfw-files"
-        s3_folder = "2018_update/results/20190425/"
-        datasets = ["iso", "adm1", "adm2"]
-        for dataset in datasets:
+    code = ["IDN.{}".format(i) for i in range(1,34)]
+    letter = "IDN"
 
-            prefix = os.path.join(s3_folder, letter, "api", dataset)
+
+    bucket = "gfw-files"
+    s3_folder = "2018_update/results/20190425/"
+    datasets = ["iso", "adm1", "adm2"]
+
+    for dataset in datasets:
+        part = 0
+        data = list()
+        for c in code:
+            prefix = os.path.join(s3_folder, c, "api", dataset)
             click.echo("Searching: " + prefix)
 
             for obj in _get_s3_records(bucket, prefix):
@@ -32,10 +35,10 @@ def cli():
                         data = list()
                         part += 1
 
-            file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
-            with open(file_name, 'w') as outfile:
-                json.dump(data, outfile)
-            _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
+        file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
+        with open(file_name, 'w') as outfile:
+            json.dump(data, outfile)
+        _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
 
 
 def _get_s3_records(bucket_name, prefix):
