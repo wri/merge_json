@@ -23,7 +23,7 @@ def cli(letter):
             if file_extension == ".txt":
                 click.echo("Download: " + os.path.basename(obj.key))
                 data += json.loads(obj.get()['Body'].read().decode('utf-8'))
-                if len(data) > 50000:
+                if len(data) > 100000:
                     file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
                     with open(file_name, 'w') as outfile:
                         json.dump(data, outfile)
