@@ -4,8 +4,7 @@ import click
 import boto3
 
 @click.command()
-@click.argument("folder")
-@click.argument("prefix")
+@click.argument("letter")
 def cli(letter):
 
     data = list()
