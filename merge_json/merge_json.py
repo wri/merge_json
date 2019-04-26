@@ -15,6 +15,7 @@ def cli(letter):
     for dataset in datasets:
 
         prefix = os.path.join(s3_folder, letter, dataset)
+        click.echo("Searching: " + prefix)
 
         for obj in _get_s3_records(bucket, prefix):
 
