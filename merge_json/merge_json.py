@@ -5,7 +5,7 @@ import boto3
 
 
 def cli():
-    letters = ["C", "J-P", "Q-R", "U-Z", "D-H"]
+    letters = ["I-other"]
     for letter in letters:
         data = list()
         part = 0
