@@ -10,7 +10,7 @@ def cli(letter):
     data = list()
     part = 0
     bucket = "gfw-files"
-    s3_folder = "2018_update/results/20190425/"
+    s3_folder = "2018_update/results/20190425/zpi"
     datasets = ["iso", "adm1", "adm2"]
     for dataset in datasets:
 
