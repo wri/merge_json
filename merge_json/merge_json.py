@@ -3,39 +3,39 @@ import json
 import click
 import boto3
 
-@click.command()
-@click.argument("letter")
-def cli(letter):
 
-    data = list()
-    part = 0
-    bucket = "gfw-files"
-    s3_folder = "2018_update/results/20190425/"
-    datasets = ["iso", "adm1", "adm2"]
-    for dataset in datasets:
+def cli():
+    letters = ["C", "J-P", "Q-R", "U-Z", "D-H"]
+    for letter in letters:
+        data = list()
+        part = 0
+        bucket = "gfw-files"
+        s3_folder = "2018_update/results/20190425/"
+        datasets = ["iso", "adm1", "adm2"]
+        for dataset in datasets:
 
-        prefix = os.path.join(s3_folder, letter, "api", dataset)
-        click.echo("Searching: " + prefix)
+            prefix = os.path.join(s3_folder, letter, "api", dataset)
+            click.echo("Searching: " + prefix)
 
-        for obj in _get_s3_records(bucket, prefix):
+            for obj in _get_s3_records(bucket, prefix):
 
-            filename, file_extension = os.path.splitext(obj.key)
-            if file_extension == ".txt":
-                click.echo("Download: " + os.path.basename(obj.key))
-                data += json.loads(obj.get()['Body'].read().decode('utf-8'))
-                if len(data) > 100000:
-                    file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
-                    with open(file_name, 'w') as outfile:
-                        json.dump(data, outfile)
-                    _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
+                filename, file_extension = os.path.splitext(obj.key)
+                if file_extension == ".txt":
+                    click.echo("Download: " + os.path.basename(obj.key))
+                    data += json.loads(obj.get()['Body'].read().decode('utf-8'))
+                    if len(data) > 100000:
+                        file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
+                        with open(file_name, 'w') as outfile:
+                            json.dump(data, outfile)
+                        _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
 
-                    data = list()
-                    part += 1
+                        data = list()
+                        part += 1
 
-        file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
-        with open(file_name, 'w') as outfile:
-            json.dump(data, outfile)
-        _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
+            file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
+            with open(file_name, 'w') as outfile:
+                json.dump(data, outfile)
+            _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
 
 
 def _get_s3_records(bucket_name, prefix):
