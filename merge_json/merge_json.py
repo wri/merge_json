@@ -10,11 +10,11 @@ def cli(letter):
     data = list()
     part = 0
     bucket = "gfw-files"
-    s3_folder = "2018_update/results/20190425/zpi"
+    s3_folder = "2018_update/results/20190425/"
     datasets = ["iso", "adm1", "adm2"]
     for dataset in datasets:
 
-        prefix = os.path.join(s3_folder, letter, dataset)
+        prefix = os.path.join(s3_folder, "api", letter, dataset)
         click.echo("Searching: " + prefix)
 
         for obj in _get_s3_records(bucket, prefix):
