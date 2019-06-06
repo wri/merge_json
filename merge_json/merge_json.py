@@ -5,9 +5,8 @@ import boto3
 
 
 def cli():
-    code = ["IDN.{}".format(i) for i in range(1,34)]
+    code = ["IDN.{}".format(i) for i in range(1, 34)]
     letter = "IDN"
-
 
     bucket = "gfw-files"
     s3_folder = "2018_update/results/20190425/"
@@ -25,24 +24,27 @@ def cli():
                 filename, file_extension = os.path.splitext(obj.key)
                 if file_extension == ".txt":
                     click.echo("Download: " + os.path.basename(obj.key))
-                    data += json.loads(obj.get()['Body'].read().decode('utf-8'))
+                    data += json.loads(obj.get()["Body"].read().decode("utf-8"))
                     if len(data) > 100000:
-                        file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
-                        with open(file_name, 'w') as outfile:
+                        file_name = "{}-{}-part-{}.json".format(
+                            letter, dataset, str(part).zfill(4)
+                        )
+                        with open(file_name, "w") as outfile:
                             json.dump(data, outfile)
-                        _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
+                        _upload_file(
+                            file_name, bucket, os.path.join(s3_folder, dataset)
+                        )
 
                         data = list()
                         part += 1
 
-        file_name = '{}-{}-part-{}.json'.format(letter, dataset, str(part).zfill(4))
-        with open(file_name, 'w') as outfile:
+        file_name = "{}-{}-part-{}.json".format(letter, dataset, str(part).zfill(4))
+        with open(file_name, "w") as outfile:
             json.dump(data, outfile)
         _upload_file(file_name, bucket, os.path.join(s3_folder, dataset))
 
 
 def _get_s3_records(bucket_name, prefix):
-
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(name=bucket_name)
 
