@@ -52,6 +52,7 @@ def retry_if_timeout(exception):
     return isinstance(exception, (botocore.exceptions.ReadTimeoutError, urllib3.exceptions.ReadTimeoutError))
 
 
+@retry(retry_on_exception=retry_if_timeout, wait_fixed=2000)
 def _get_s3_records(bucket_name, prefix):
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(name=bucket_name)
